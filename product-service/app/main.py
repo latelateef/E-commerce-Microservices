@@ -23,6 +23,11 @@ class Product(BaseModel):
     price: float
     stock: int
 
+class ProductInput(BaseModel):
+    name: str
+    price: float
+    stock: int
+
 # Utility functions
 def load_products() -> List[Product]:
     with open(DATA_FILE, "r") as f:
@@ -34,21 +39,39 @@ def save_products(products: List[Product]):
 
 # Routes
 @app.post("/product")
-def add_product(product: Product):
+def add_product(product: ProductInput):
     products = load_products()
-    product.id = len(products)  # Auto-increment ID starting from 0
-    products.append(product)
+    product_id = len(products)
+    new_product = Product(id=product_id, name=product.name, price=product.price, stock=product.stock)
+    products.append(new_product)
     save_products(products)
-    return {"message": "Product added", "product": product}
+    return {"message": "Product added", "product": new_product}
 
 @app.get("/products")
 def list_products():
     return load_products()
 
-@app.get("/products/{product_id}")
-def get_product(product_id: int):
+# Decrease stock of product
+@app.put("/products/{product_id}/decrease_stock")
+def decrease_stock(product_id:int, quantity: int):
     products = load_products()
     for product in products:
         if product.id == product_id:
-            return product
+            if product.stock >= quantity:
+                product.stock -= quantity
+                save_products(products)
+                return {"message": "Stock decreased", "product": product}
+            else:
+                return {"error": "Insufficient stock"}
+    return {"error": "Product not found"}
+
+# Update product stock
+@app.put("/products/{product_id}/update_stock")
+def update_stock(product_id: int, new_stock: int):
+    products = load_products()
+    for product in products:
+        if product.id == product_id:
+            product.stock += new_stock
+            save_products(products)
+            return {"message": "Stock updated", "product": product}
     return {"error": "Product not found"}

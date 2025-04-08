@@ -4,24 +4,26 @@ services:
   user-service:
     build: ./user-service
     ports:
-      - "5000:80"
+      - "5001:80"
 
   product-service:
     build: ./product-service
     ports:
-      - "5001:80"
+      - "5002:80"
 
   order-service:
     build: ./order-service
     ports:
-      - "5002:80"
+      - "5003:80"
     depends_on:
       - user-service
       - product-service
-
-  delivery-service:
-    build: ./delivery-service
+  api-gateway:
+    build: ./api-gateway
     ports:
-      - "5003:80"
+      - "5000:80"
     depends_on:
+      - user-service
+      - product-service
       - order-service
+

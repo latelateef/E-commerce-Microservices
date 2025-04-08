@@ -15,6 +15,11 @@ class User(BaseModel):
     email: str
     password: str
 
+class UserInput(BaseModel):
+    name: str
+    email: str
+    password: str
+
 # --- Utility functions ---
 def load_users() -> List[User]:
     if not os.path.exists(DATA_FILE):
@@ -37,14 +42,15 @@ def save_users(users: List[User]):
 # --- API Endpoints ---
 # Create a new user
 @app.post("/signup")
-def signup(user: User):
+def signup(user: UserInput):
     users = load_users()
     if any(u.email == user.email for u in users):
         return {"error": "Email already exists"}
-    user.id = len(users) # Auto-increment ID starting from 0
-    users.append(user)
+    user_id = len(users)
+    new_user = User(id=user_id, name=user.name, email=user.email, password=user.password)
+    users.append(new_user)
     save_users(users)
-    return {"message": "User registered", "user": user}
+    return {"message": "User registered", "user": new_user}
 
 # Login user
 @app.post("/login")

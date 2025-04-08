@@ -9,12 +9,18 @@
     "id": 1,
     "name": "Pen",
     "price": 25.0,
-    "stock": 20
+    "stock": 17
   },
   {
     "id": 2,
     "name": "Watch",
     "price": 999.0,
-    "stock": 5
+    "stock": 4
+  },
+  {
+    "id": 3,
+    "name": "Bottle",
+    "price": 199.0,
+    "stock": 13
   }
 ]

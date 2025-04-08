@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - "5000:80"
+
+  product-service:
+    build: ./product-service
+    ports:
+      - "5001:80"
+
+  order-service:
+    build: ./order-service
+    ports:
+      - "5002:80"
+    depends_on:
+      - user-service
+      - product-service
+
+  delivery-service:
+    build: ./delivery-service
+    ports:
+      - "5003:80"
+    depends_on:
+      - order-service

@@ -42,14 +42,14 @@ def save_orders(orders: List[Order]):
 async def place_order(order: Order):
     # Verify user
     async with httpx.AsyncClient() as client:
-        user_response = await client.get(f"http://localhost:5000/user/{order.userId}")
+        user_response = await client.get(f"http://user-service/user/{order.userId}")
         if user_response.status_code != 200:
             return {"error": "User not found"}
 
     # Verify products
     async with httpx.AsyncClient() as client:
         for item in order.items:
-            product_response = await client.get(f"http://localhost:5001/products/{item.productId}")
+            product_response = await client.get(f"http://product-service/products/{item.productId}")
             if product_response.status_code != 200:
                 return {"error": f"Product {item.productId} not found"}
 

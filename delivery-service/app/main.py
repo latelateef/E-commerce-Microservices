@@ -46,7 +46,7 @@ def save_deliveries(deliveries: List[Delivery]):
 async def assign_delivery(data: DeliveryAssign):
     # Verify order exists
     async with httpx.AsyncClient() as client:
-        res = await client.get(f"http://localhost:5002/order/{data.orderId}")
+        res = await client.get(f"http://order-service/order/{data.orderId}")
         if res.status_code != 200:
             return {"error": "Order not found"}
 
@@ -84,7 +84,7 @@ async def update_delivery(delivery_id: int, data: StatusUpdate):
         if data.status == "delivered":
             async with httpx.AsyncClient() as client:
                 await client.put(
-                    f"http://localhost:5002/order/{deliveries[delivery_id].orderId}/status",
+                    f"http://order-service/order/{deliveries[delivery_id].orderId}/status",
                     json={"status": "delivered"}
                 )
 

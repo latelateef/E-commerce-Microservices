@@ -8,7 +8,7 @@ app = FastAPI()
 
 # Setup paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_FILE = os.path.join(BASE_DIR, "../data/products.json")
+DATA_FILE = os.path.join(BASE_DIR, "data/products.json")
 
 # Ensure data directory and file exist
 os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)

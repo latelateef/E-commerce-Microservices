@@ -6,7 +6,7 @@ import os
 
 app = FastAPI()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_FILE = os.path.join(BASE_DIR, "../data/users.json")
+DATA_FILE = os.path.join(BASE_DIR, "data/users.json")
 
 # Models
 class User(BaseModel):

@@ -5,3 +5,4 @@ httpx
 motor
 pymongo
 bcrypt
+dotenv

@@ -1,77 +1,91 @@
-from fastapi import FastAPI
+from typing import Optional, List
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List, Optional
-import json
-import os
+from app.db import db
+from bson import ObjectId
+import bcrypt
 
 app = FastAPI()
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_FILE = os.path.join(BASE_DIR, "data/users.json")
 
-# Models
+# ------------------- Utility Functions -------------------
+
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+
+def serialize_user(user) -> dict:
+    return {
+        "id": str(user["_id"]),
+        "name": user["name"],
+        "email": user["email"],
+    }
+
+# ------------------- Models -------------------
+
 class User(BaseModel):
-    id: int
+    id: Optional[str]
     name: str
     email: str
     password: str
 
-class UserInput(BaseModel):
+class UserOut(BaseModel):
+    id: str
+    name: str
+    email: str
+
+class SignUpInput(BaseModel):
     name: str
     email: str
     password: str
 
-# --- Utility functions ---
-def load_users() -> List[User]:
-    if not os.path.exists(DATA_FILE):
-        return []
+class LoginInput(BaseModel):
+    email: str
+    password: str
 
-    if os.path.getsize(DATA_FILE) == 0:
-        with open(DATA_FILE, "w") as f:
-            f.write("[]")  # Initialize with empty list
+# ------------------- Routes -------------------
 
-    with open(DATA_FILE, "r") as f:
-        return [User(**u) for u in json.load(f)]
+@app.post("/signup", response_model=UserOut)
+async def signup(user: SignUpInput):
+    existing = await db.users.find_one({"email": user.email})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already exists")
 
+    hashed_pwd = hash_password(user.password)
+    user_data = user.model_dump()
+    user_data["password"] = hashed_pwd
 
-def save_users(users: List[User]):
-    if not os.path.exists(DATA_FILE):
-        return []
-    with open(DATA_FILE, "w") as f:
-        json.dump([u.model_dump() for u in users], f, indent=2)
+    result = await db.users.insert_one(user_data)
+    new_user = await db.users.find_one({"_id": result.inserted_id})
+    return serialize_user(new_user)
 
-# --- API Endpoints ---
-# Create a new user
-@app.post("/signup")
-def signup(user: UserInput):
-    users = load_users()
-    if any(u.email == user.email for u in users):
-        return {"error": "Email already exists"}
-    user_id = len(users)
-    new_user = User(id=user_id, name=user.name, email=user.email, password=user.password)
-    users.append(new_user)
-    save_users(users)
-    return {"message": "User registered", "user": new_user}
-
-# Login user
 @app.post("/login")
-def login(data: dict):
-    users = load_users()
-    for user in users:
-        if user.email == data["email"] and user.password == data["password"]:
-            return {"message": "Login successful"}
-    return {"message": "Invalid credentials"}
+async def login(data: LoginInput):
+    user = await db.users.find_one({"email": data.email})
+    if user and verify_password(data.password, user["password"]):
+        return {"message": "Login successful", "user": serialize_user(user)}
+    raise HTTPException(status_code=401, detail="Invalid credentials")
 
-# Return user details
-@app.get("/user/{user_id}")
-def get_user(user_id: int):
-    users = load_users()
-    for user in users:
-        if user.id == user_id:
-            return user
-    return {"error": "User not found"}
+from bson import ObjectId, errors as bson_errors
 
-# List all users
-@app.get("/users")
-def list_users():
-    users = load_users()
+@app.get("/user/{user_id}", response_model=UserOut)
+async def get_user(user_id: str):
+    try:
+        obj_id = ObjectId(user_id)
+    except bson_errors.InvalidId:
+        raise HTTPException(status_code=400, detail="Invalid user ID format")
+
+    user = await db.users.find_one({"_id": obj_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return serialize_user(user)
+
+
+@app.get("/users", response_model=List[UserOut])
+async def list_users():
+    users = []
+    async for user in db.users.find():
+        users.append(serialize_user(user))
     return users

@@ -21,7 +21,7 @@ services:
   api-gateway:
     build: ./api-gateway
     ports:
-      - "5000:80"
+      - "8000:80"
     depends_on:
       - user-service
       - product-service

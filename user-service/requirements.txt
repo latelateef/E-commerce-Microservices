@@ -2,3 +2,6 @@ fastapi
 uvicorn
 python-multipart
 httpx
+motor
+pymongo
+bcrypt

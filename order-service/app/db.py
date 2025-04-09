@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
+MONGO_URL = os.getenv("MONGO_URL", "mongodb://admin:admin123@mongodb:27017")
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
 db = client["order_db"]  # each microservice uses a separate DB
 collection = db["orders"]

@@ -43,9 +43,9 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 h-[46rem] flex items-center justify-center">
       <motion.div
-        className="max-w-md mx-auto"
+        className="max-w-md mx-auto w-[20rem]"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -102,12 +102,12 @@ export default function SignInPage() {
               Sign up
             </Link>
           </p>
-          <div className="mt-4">
+        </div>
+          {/* <div className="mt-4 text-sm text-gray-400 text-center">
             <p className="mb-2">Demo Accounts:</p>
             <p>User: user@example.com / password</p>
             <p>Admin: admin@example.com / password</p>
-          </div>
-        </div>
+          </div> */}
       </motion.div>
     </div>
   )

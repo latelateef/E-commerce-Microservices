@@ -2,8 +2,7 @@ import { Card, CardTitle, CardDescription } from "@/components/ui/product-card";
 // import { useEffect, useState } from 'react';
 // import axios from 'axios';
 import { cn } from "@/lib/utils";
-import { HashLink as Link } from "react-router-hash-link";
-
+import Link from "next/link";
 
 // type Product = {
 //   id: string;
@@ -30,7 +29,7 @@ export default function Products() {
   // }
 
   return (
-    <div className="max-w-8xl mx-auto px-8">
+    <div className="max-w-8xl mx-auto px-8" id="products">
       <ProductCard items={projects} />
     </div>
   );
@@ -38,38 +37,38 @@ export default function Products() {
 
 export const projects = [
   {
-    title: "Stripe",
-    description:
+    name: "Stripe",
+    price:
       "A technology company that builds economic infrastructure for the internet.",
     link: "https://stripe.com",
   },
   {
-    title: "Netflix",
-    description:
+    name: "Netflix",
+    price:
       "A streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices.",
     link: "https://netflix.com",
   },
   {
-    title: "Google",
-    description:
+    name: "Google",
+    price:
       "A multinational technology company that specializes in Internet-related services and products.",
     link: "https://google.com",
   },
   {
-    title: "Meta",
-    description:
+    name: "Meta",
+    price:
       "A technology company that focuses on building products that advance Facebook's mission of bringing the world closer together.",
     link: "https://meta.com",
   },
   {
-    title: "Amazon",
-    description:
+    name: "Amazon",
+    price:
       "A multinational technology company focusing on e-commerce, cloud computing, digital streaming, and artificial intelligence.",
     link: "https://amazon.com",
   },
   {
-    title: "Microsoft",
-    description:
+    name: "Microsoft",
+    price:
       "A multinational technology company that develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services.",
     link: "https://microsoft.com",
   },
@@ -86,13 +85,13 @@ export const ProductCard = ({ items } ) => {
     >
       {items.map((item) => (
         <Link
-          to={item?.link}
+          href={item?.link}
           key={item?.link}
-          className="relative group  block p-2 h-full w-full"
+          className="group block p-2 h-full w-full"
         >
           <Card>
-            <CardTitle>{item.title}</CardTitle>
-            <CardDescription>{item.description}</CardDescription>
+            <CardTitle>{item.name}</CardTitle>
+            <CardDescription>{item.price}</CardDescription>
           </Card>
         </Link>
       ))}

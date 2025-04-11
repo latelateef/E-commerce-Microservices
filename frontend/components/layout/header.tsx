@@ -17,7 +17,8 @@ export default function Header() {
 
   const navItems = [
     { name: "Home", href: "/" },
-    { name: "Products", href: "/products" },
+    { name: "Products", href: "/#products" },
+    { name: "About", href: "#about" },
   ]
 
   if (user) {
@@ -29,11 +30,11 @@ export default function Header() {
   }
 
   return (
-    <header className="border-b border-gray-800">
+    <header className="fixed w-full bg-black border-b border-gray-800">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold">
-            MONO
+            CEC
           </Link>
 
           {/* Desktop Navigation */}

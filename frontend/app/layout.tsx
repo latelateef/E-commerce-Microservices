@@ -13,8 +13,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Monochrome - Minimalist E-commerce",
-  description: "A modern, minimalist e-commerce store",
-    generator: 'v0.dev'
+  description: "A modern, minimalist e-commerce store"
 }
 
 export default function RootLayout({

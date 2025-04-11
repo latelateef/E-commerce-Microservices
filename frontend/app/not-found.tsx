@@ -7,7 +7,7 @@ import { Home } from "lucide-react"
 
 export default function NotFound() {
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 mt-20">
       <motion.div
         className="flex flex-col items-center justify-center min-h-[60vh] text-center"
         initial={{ opacity: 0 }}

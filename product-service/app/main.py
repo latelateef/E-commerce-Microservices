@@ -32,13 +32,14 @@ def serialize_product(product) -> dict:
         "stock": product["stock"]
     }
 
-# Routes
+# Add product
 @app.post("/product", response_model=Product)
 async def add_product(product: ProductInput):
     result = await db.products.insert_one(product.model_dump())
     new_product = await db.products.find_one({"_id": result.inserted_id})
     return serialize_product(new_product)
 
+# List all products
 @app.get("/products", response_model=List[Product])
 async def list_products():
     products = []
@@ -47,6 +48,7 @@ async def list_products():
         products.append(serialize_product(product))
     return products
 
+# Decrease Stock of ordered product
 @app.put("/products/{product_id}/decrease_stock", response_model=Product)
 async def decrease_stock(product_id: str, data: QuantityInput):
     product = await db.products.find_one({"_id": ObjectId(product_id)})
@@ -62,6 +64,7 @@ async def decrease_stock(product_id: str, data: QuantityInput):
     updated = await db.products.find_one({"_id": ObjectId(product_id)})
     return serialize_product(updated)
 
+# Update Stock
 @app.put("/products/{product_id}/add_stock", response_model=Product)
 async def add_stock(product_id: str, data: QuantityInput):
     product = await db.products.find_one({"_id": ObjectId(product_id)})

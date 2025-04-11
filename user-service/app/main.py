@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from app.db import db
 from bson import ObjectId
 import bcrypt
+from bson import ObjectId, errors as bson_errors
 
 app = FastAPI()
 
@@ -66,8 +67,6 @@ async def login(data: LoginInput):
     if user and verify_password(data.password, user["password"]):
         return {"message": "Login successful", "user": serialize_user(user)}
     raise HTTPException(status_code=401, detail="Invalid credentials")
-
-from bson import ObjectId, errors as bson_errors
 
 @app.get("/user/{user_id}", response_model=UserOut)
 async def get_user(user_id: str):

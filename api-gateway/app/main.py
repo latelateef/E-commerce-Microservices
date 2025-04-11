@@ -1,12 +1,20 @@
-from urllib.parse import parse_qs
 from fastapi import FastAPI, Request, Response
 import httpx
 import os
 from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # or ["*"] for all
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Service URLs from environment variables (Docker/K8s friendly)
 USER_SERVICE_URL = os.getenv("USER_SERVICE_URL", "http://user-service")
@@ -39,3 +47,5 @@ async def proxy_request(request: Request, url: str):
             headers=response.headers,
             media_type=response.headers.get("content-type")
         )
+
+# uvicorn app.main:app --reload --port 8000

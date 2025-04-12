@@ -103,11 +103,6 @@ export default function SignInPage() {
             </Link>
           </p>
         </div>
-          {/* <div className="mt-4 text-sm text-gray-400 text-center">
-            <p className="mb-2">Demo Accounts:</p>
-            <p>User: user@example.com / password</p>
-            <p>Admin: admin@example.com / password</p>
-          </div> */}
       </motion.div>
     </div>
   )

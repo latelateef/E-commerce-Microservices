@@ -1,10 +1,13 @@
 "use client"
 
 import type React from "react"
+import axios from "axios"
 
 import { createContext, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
+import { signInAPI } from "@/lib/api"
+import { signUpAPI } from "@/lib/api"
 
 export type User = {
   id: string
@@ -63,46 +66,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false)
   }, [])
 
-  const signIn = async (email: string, password: string) => {
-    // Simulate API call
-    const foundUser = MOCK_USERS.find((u) => u.email === email && u.password === password)
+    const signIn = async (email: string, password: string) => {
+      try {
 
-    if (foundUser) {
-      const { password, ...userWithoutPassword } = foundUser
-      setUser(userWithoutPassword)
-      localStorage.setItem("user", JSON.stringify(userWithoutPassword))
-      toast.success("Signed in successfully")
-
-      if (foundUser.role === "admin") {
-        router.push("/admin/dashboard")
-      } else {
-        router.push("/products")
+        const user = await signInAPI(email, password)
+    
+        // Save user to state / storage
+        setUser(user)
+        localStorage.setItem("user", JSON.stringify(user))
+  
+        toast.success("Signed in successfully")
+  
+        // Optional: redirect based on role
+        if (user.role === "admin") {
+          router.push("/admin/dashboard")
+        } else {
+          router.push("/products")
+        }
+  
+      } catch (error: any) {
+        const message = error.response?.data?.message || "Sign in failed"
+        toast.error(message)
+        throw new Error(message)
       }
-    } else {
-      toast.error("Invalid email or password")
-      throw new Error("Invalid email or password")
     }
-  }
+  
 
   const signUp = async (email: string, name: string, password: string) => {
-    // Check if user already exists
-    if (MOCK_USERS.some((u) => u.email === email)) {
-      toast.error("User already exists")
-      throw new Error("User already exists")
+    try{
+      // Check if email already exists
+      // const user = await 
+      const newUser = await signUpAPI(name, email, password)
+      setUser(newUser)
+      localStorage.setItem("user", JSON.stringify(newUser))
+      toast.success("Account created successfully")
+      router.push("/products")
+    }catch(error: any){
+      const message = error.response?.data?.message || "Sign up failed"
+      toast.error(message)
+      throw new Error(message)
     }
 
-    // In a real app, you would make an API call to create the user
-    const newUser = {
-      id: Math.random().toString(36).substring(2, 9),
-      email,
-      name,
-      role: "user" as const,
-    }
-
-    setUser(newUser)
-    localStorage.setItem("user", JSON.stringify(newUser))
-    toast.success("Account created successfully")
-    router.push("/products")
   }
 
   const signOut = () => {

@@ -1,81 +1,67 @@
-import { Card, CardTitle, CardDescription } from "@/components/ui/product-card";
-// import { useEffect, useState } from 'react';
-// import axios from 'axios';
+import { Card, CardTitle, CardDescription, CardPrice } from "@/components/ui/product-card";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import React, { useState, useEffect } from 'react';
+import { getAllProducts } from "@/lib/api";
+import { set } from "date-fns";
 
-// type Product = {
-//   id: string;
-//   name: string;
-//   price: number;
-//   stock: number;
-// };
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+};
+
+const mockProducts: Product[] = [
+  { id: '67f6c173e4c28516e2cb740f', name: 'Bottle', price: 199.0, stock: 148 },
+  { id: '67f6c1a3e4c28516e2cb7410', name: 'Handwash', price: 60.0, stock: 100 },
+  { id: '67f6c1bce4c28516e2cb7411', name: 'Watch', price: 1999.0, stock: 49 },
+  { id: '67f6c1dae4c28516e2cb7412', name: 'Earbuds', price: 1499.0, stock: 70 },
+];
 
 export default function Products() {
-  // const [projects, setProjects] = useState<Product[]>([]);
 
-  // useEffect(() => {
-  //   axios.get('http://localhost:8000/api/products/products')
-  //   .then(res => setProjects(res.data))
-  //   .catch(err => console.error(err));
-  // }, []);
+  // State to hold products, loading status, and errors
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // if (projects.length === 0) {
-  //   return (
-  //     <div className="max-w-8xl mx-auto px-8 py-10">
-  //       <h1 className="text-center text-2xl text-white">Loading...</h1>
-  //     </div>
-  //   );
+  // Fetch products from the backend when the component mounts
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const fetched = await getAllProducts();
+        setProducts(fetched); // Update state with fetched products
+      } catch (err: any) {
+        setError(err.message || 'Failed to fetch products'); // Capture any errors
+        setProducts(mockProducts); // Fallback to mock data
+      } finally {
+        setLoading(false); // Stop loading regardless of success or failure
+      }
+    };
+
+    fetchProducts(); // Call the fetch function
+
+  }, []); // Empty dependency array means this runs once on mount
+
+  // Conditional rendering based on loading and error states
+  if (loading) {
+    return <div className="flex items-center justify-center">Loading...</div>;
+  }
+
+  // if (error) {
+  //   return <div className="flex items-center justify-center text-red-900">Internal Server Error: Failed to fetch products.</div>;
   // }
 
   return (
     <div className="max-w-8xl mx-auto px-8" id="products">
-      <ProductCard items={projects} />
+      <ProductCard items={products} />
     </div>
   );
 }
 
-export const projects = [
-  {
-    name: "Stripe",
-    price:
-      "A technology company that builds economic infrastructure for the internet.",
-    link: "https://stripe.com",
-  },
-  {
-    name: "Netflix",
-    price:
-      "A streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices.",
-    link: "https://netflix.com",
-  },
-  {
-    name: "Google",
-    price:
-      "A multinational technology company that specializes in Internet-related services and products.",
-    link: "https://google.com",
-  },
-  {
-    name: "Meta",
-    price:
-      "A technology company that focuses on building products that advance Facebook's mission of bringing the world closer together.",
-    link: "https://meta.com",
-  },
-  {
-    name: "Amazon",
-    price:
-      "A multinational technology company focusing on e-commerce, cloud computing, digital streaming, and artificial intelligence.",
-    link: "https://amazon.com",
-  },
-  {
-    name: "Microsoft",
-    price:
-      "A multinational technology company that develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services.",
-    link: "https://microsoft.com",
-  },
-];
 
-
-export const ProductCard = ({ items } ) => {
+export const ProductCard = ({ items }: any ) => {
 
   return (
     <div
@@ -83,15 +69,16 @@ export const ProductCard = ({ items } ) => {
         "grid grid-cols-1 md:grid-cols-3  lg:grid-cols-4 py-10"
       )}
     >
-      {items.map((item) => (
+      {items.map((item: any) => (
         <Link
-          href={item?.link}
-          key={item?.link}
+          href="/"
+          // key={item?.link}
           className="group block p-2 h-full w-full"
         >
           <Card>
             <CardTitle>{item.name}</CardTitle>
-            <CardDescription>{item.price}</CardDescription>
+            <CardPrice>{item.price}</CardPrice>
+            <CardDescription>{item.stock}</CardDescription>
           </Card>
         </Link>
       ))}

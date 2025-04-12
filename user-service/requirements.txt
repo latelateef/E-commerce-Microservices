@@ -4,5 +4,8 @@ python-multipart
 httpx
 motor
 pymongo
-bcrypt
 dotenv
+python-jose[cryptography] 
+passlib[bcrypt]
+pydantic
+email-validator

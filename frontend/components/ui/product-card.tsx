@@ -10,7 +10,7 @@ export const Card = ({
     return (
       <div
         className={cn(
-          "rounded-2xl h-full w-full p-4 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-slate-700",
+          "rounded-2xl h-full w-full p-4 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 group-hover:scale-105 transition-transform duration-300 ease-in-out text-center",
           className
         )}
       >
@@ -29,13 +29,13 @@ export const Card = ({
     children: React.ReactNode;
   }) => {
     return (
-      <h4 className={cn("text-zinc-100 font-bold tracking-wide mt-4", className)}>
+      <h4 className={cn("text-zinc-100 font-bold tracking-wide mt-4 text-xl", className)}>
         {children}
       </h4>
     );
   };
-
-  export const CardDescription = ({
+  
+  export const CardPrice = ({
     className,
     children,
   }: {
@@ -44,12 +44,35 @@ export const Card = ({
   }) => {
     return (
       <p
-        className={cn(
-          "mt-8 text-zinc-400 tracking-wide leading-relaxed text-sm",
-          className
-        )}
+      className={cn(
+        "mt-8 text-zinc-400 tracking-wide leading-relaxed text-sm",
+        className
+      )}
       >
-        {children}
+        Price: {children}
       </p>
     );
   };
+    
+      export const CardDescription = ({
+        className,
+        children,
+      }: {
+        className?: string;
+        children: React.ReactNode;
+      }) => {
+        const stock = children;
+        const isAvailable = Number(stock) > 0;
+        const stockText = isAvailable ? "In Stock" : "Out of Stock";
+        const stockClass = isAvailable ? "text-green-500" : "text-red-500";
+        return (
+          <p
+            className={cn(
+              "mt-8 text-zinc-400 tracking-wide leading-relaxed text-sm",
+              className, stockClass
+            )}
+          >
+             {stockText}
+          </p>
+        );
+      };

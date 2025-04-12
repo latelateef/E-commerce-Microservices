@@ -96,7 +96,7 @@ export default function SignUpPage() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password (Minimum 6 characters)</FormLabel>
+                  <FormLabel>Password (Minimum 8 characters)</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="••••••" {...field} />
                   </FormControl>

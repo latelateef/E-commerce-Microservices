@@ -11,6 +11,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/hooks/use-auth"
 import { Loader2 } from "lucide-react"
+import { signInAPI } from "@/lib/api"
+import { useRouter } from 'next/navigation'
+import { toast } from "sonner"
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -22,6 +25,7 @@ type FormValues = z.infer<typeof formSchema>
 export default function SignInPage() {
   const { signIn } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -34,9 +38,22 @@ export default function SignInPage() {
   async function onSubmit(values: FormValues) {
     setIsLoading(true)
     try {
-      await signIn(values.email, values.password)
-    } catch (error) {
+      const data = await signInAPI(values.email, values.password)
+
+      toast.success("Login successful",
+        {
+          icon: "✅"
+        })
+      // Delay the redirect slightly
+      setTimeout(() => {
+        router.push("/dashboard") 
+      }, 1000)
+    } catch (error: any) {
       console.error(error)
+  
+      const errorMessage = "Invalid Credentials"
+  
+      toast.error(`${errorMessage}`)
     } finally {
       setIsLoading(false)
     }

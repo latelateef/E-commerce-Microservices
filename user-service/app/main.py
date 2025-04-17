@@ -108,38 +108,38 @@ class LoginInput(BaseModel):
     email: EmailStr
     password: str
 
-class AdminSignUpInput(UserSignUpInput):
-    name: str
-    email: EmailStr
-    password: str
+# class AdminSignUpInput(UserSignUpInput):
+#     name: str
+#     email: EmailStr
+#     password: str
 
-    @validator('email')
-    def validate_email(cls, v: EmailStr):
-        if "admin" not in v:
-            raise ValueError("Admin email must contain 'admin'")
-        return v
+#     @validator('email')
+#     def validate_email(cls, v: EmailStr):
+#         if "admin" not in v:
+#             raise ValueError("Admin email must contain 'admin'")
+#         return v
 
-    @validator('password')
-    def validate_password_strength(cls, v: str):
-        if len(v) < 8:
-            raise ValueError("Password must be at least 8 characters long")
-        return v
+#     @validator('password')
+#     def validate_password_strength(cls, v: str):
+#         if len(v) < 8:
+#             raise ValueError("Password must be at least 8 characters long")
+#         return v
 
 # ------------------- Routes -------------------
 
-@app.post("/admin/signup", response_model=UserOut)
-async def admin_signup(admin: AdminSignUpInput):
-    existing = await db.admin.find_one({"email": admin.email})
-    if existing:
-        raise HTTPException(status_code=400, detail="Admin email already exists")
+# @app.post("/admin/signup", response_model=UserOut)
+# async def admin_signup(admin: AdminSignUpInput):
+#     existing = await db.admin.find_one({"email": admin.email})
+#     if existing:
+#         raise HTTPException(status_code=400, detail="Admin email already exists")
 
-    hashed_pwd = hash_password(admin.password)
-    admin_data = admin.model_dump()
-    admin_data["password"] = hashed_pwd
+#     hashed_pwd = hash_password(admin.password)
+#     admin_data = admin.model_dump()
+#     admin_data["password"] = hashed_pwd
 
-    result = await db.admin.insert_one(admin_data)
-    new_admin = await db.admin.find_one({"_id": result.inserted_id})
-    return serialize_user(new_admin)
+#     result = await db.admin.insert_one(admin_data)
+#     new_admin = await db.admin.find_one({"_id": result.inserted_id})
+#     return serialize_user(new_admin)
 
 
 @app.post("/signup")

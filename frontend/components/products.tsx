@@ -1,9 +1,9 @@
-import { Card, CardTitle, CardDescription, CardPrice } from "@/components/ui/product-card";
+import { Card, CardTitle, CardDescription, CardPrice } from "@/components/product-card";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import React, { useState, useEffect } from 'react';
 import { getAllProducts } from "@/lib/api";
-import { set } from "date-fns";
+import { Button } from "@/components/ui/button";
 
 type Product = {
   id: string;
@@ -79,6 +79,9 @@ export const ProductCard = ({ items }: any ) => {
             <CardTitle>{item.name}</CardTitle>
             <CardPrice>{item.price}</CardPrice>
             <CardDescription>{item.stock}</CardDescription>
+            <Button variant="secondary" className="w-full mt-4">
+              Add to Cart
+            </Button>
           </Card>
         </Link>
       ))}

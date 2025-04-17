@@ -34,7 +34,7 @@ export default function Header() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold">
-            CEC
+          MicroMart
           </Link>
 
           {/* Desktop Navigation */}
@@ -43,9 +43,7 @@ export default function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`text-sm ${
-                  pathname === item.href ? "text-white font-medium" : "text-gray-400 hover:text-white"
-                }`}
+                className={`text-sm text-gray-400 hover:text-white`}
               >
                 {item.name}
               </Link>

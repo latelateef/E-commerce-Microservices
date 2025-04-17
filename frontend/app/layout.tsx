@@ -2,7 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import { Toaster } from "react-hot-toast"
+import { Toaster } from "@/components/ui/sonner"
 import { AuthProvider } from "@/providers/auth-provider"
 import { CartProvider } from "@/providers/cart-provider"
 import { ThemeProvider } from "@/providers/theme-provider"
@@ -12,7 +12,7 @@ import Footer from "@/components/layout/footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Monochrome - Minimalist E-commerce",
+  title: "MicroMart",
   description: "A modern, minimalist e-commerce store"
 }
 
@@ -32,12 +32,7 @@ export default function RootLayout({
               <Footer />
               <Toaster
                 position="top-center"
-                toastOptions={{
-                  style: {
-                    background: "#333",
-                    color: "#fff",
-                  },
-                }}
+                duration={3000}
               />
             </CartProvider>
           </AuthProvider>

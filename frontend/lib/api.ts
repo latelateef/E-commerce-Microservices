@@ -2,12 +2,14 @@ import axios from "@/lib/axios"
 
 // AUTH
 export const signInAPI = async (email: string, password: string) => {
-  const res = await axios.post("/api/users/login", { email, password })
+  const res = await axios.post("/api/users/login", { email, password }, {
+    withCredentials: true })
   return res.data
 }
 
 export const signUpAPI = async (name: string, email: string, password: string) => {
-  const res = await axios.post("/api/users/signup", { name, email, password })
+  const res = await axios.post("/api/users/signup", { name, email, password }, {
+    withCredentials: true })
   return res.data
 }
 

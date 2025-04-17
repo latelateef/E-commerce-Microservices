@@ -45,8 +45,8 @@ services:
       - mongodb
     environment:
       MONGO_URI: mongodb://admin:admin123@mongodb:27017
-    env_file:
-      - fileName: ./order-service/.env
+    # env_file:
+      # - ./order-service/.env
 
   api-gateway:
     build: ./api-gateway
@@ -56,8 +56,8 @@ services:
       - user-service
       - product-service
       - order-service
-    env_file:
-      - fileName: ./api-gateway/.env
+    # env_file:
+      # - ./api-gateway/.env
 
 volumes:
   mongo_data:
